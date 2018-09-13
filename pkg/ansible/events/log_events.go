@@ -15,6 +15,8 @@
 package events
 
 import (
+	"flag"
+
 	"github.com/operator-framework/operator-sdk/pkg/ansible/runner/eventapi"
 	"github.com/sirupsen/logrus"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
@@ -33,6 +35,8 @@ const (
 	// Nothing -  this will log nothing.
 	Nothing
 )
+
+var logLevel = flag.Int("log-level", int(Tasks), "select the log level")
 
 // EventHandler - knows how to handle job events.
 type EventHandler interface {
@@ -66,7 +70,11 @@ func (l loggingEventHandler) Handle(u *unstructured.Unstructured, e eventapi.Job
 }
 
 // NewLoggingEventHandler - Creates a Logging Event Handler to log events.
-func NewLoggingEventHandler(l LogLevel) EventHandler {
+func NewLoggingEventHandler() EventHandler {
+	var l LogLevel
+	if logLevel != nil {
+		l = LogLevel(*logLevel)
+	}
 	return loggingEventHandler{
 		LogLevel: l,
 	}
