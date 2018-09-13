@@ -46,7 +46,7 @@ func Add(mgr manager.Manager, options Options) {
 	if options.EventHandlers == nil {
 		options.EventHandlers = []events.EventHandler{}
 	}
-	eventHandlers := append(options.EventHandlers, events.NewLoggingEventHandler())
+	eventHandlers := append(options.EventHandlers, events.NewLoggingEventHandler(options.LoggingLevel))
 
 	h := &AnsibleOperatorReconciler{
 		Client:        mgr.GetClient(),
