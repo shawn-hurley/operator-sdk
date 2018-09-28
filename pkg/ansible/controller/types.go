@@ -96,7 +96,7 @@ func NewStatusFromMap(sm map[string]interface{}) Status {
 
 type ResourceStatus struct {
 	Status          `json:",inline"`
-	FailureMessages []string `json:"failures,omitempty"`
+	FailureMessages []string `json:"reasons,omitempty"`
 	History         []Status `json:"history,omitempty"`
 }
 
