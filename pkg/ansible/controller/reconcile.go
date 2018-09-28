@@ -97,6 +97,7 @@ func (r *AnsibleOperatorReconciler) Reconcile(request reconcile.Request) (reconc
 
 	// iterate events from ansible, looking for the final one
 	statusEvent := eventapi.StatusJobEvent{}
+	failures := []string{}
 	for event := range eventChan {
 		for _, eHandler := range r.EventHandlers {
 			go eHandler.Handle(u, event)
@@ -112,6 +113,21 @@ func (r *AnsibleOperatorReconciler) Reconcile(request reconcile.Request) (reconc
 				return reconcile.Result{}, err
 			}
 		}
+		if event.Event == "runner_on_failed" {
+			//known result for failure.
+			result, ok := event.EventData["res"].(map[string]interface{})
+			if !ok {
+				failures = append(failures, "unknown error")
+				continue
+			}
+			msg, ok := result["msg"].(string)
+			if !ok {
+				failures = append(failures, "unknown error")
+				continue
+			}
+
+			failures = append(failures, msg)
+		}
 	}
 	if statusEvent.Event == "" {
 		err := errors.New("did not receive playbook_on_stats event")
@@ -121,13 +137,7 @@ func (r *AnsibleOperatorReconciler) Reconcile(request reconcile.Request) (reconc
 
 	// We only want to update the CustomResource once, so we'll track changes and do it at the end
 	var needsUpdate bool
-	runSuccessful := true
-	for _, count := range statusEvent.EventData.Failures {
-		if count > 0 {
-			runSuccessful = false
-			break
-		}
-	}
+	runSuccessful := len(failures) > 0
 	// The finalizer has run successfully, time to remove it
 	if deleted && finalizerExists && runSuccessful {
 		finalizers := []string{}
@@ -143,13 +153,15 @@ func (r *AnsibleOperatorReconciler) Reconcile(request reconcile.Request) (reconc
 	statusMap, ok := u.Object["status"].(map[string]interface{})
 	if !ok {
 		u.Object["status"] = ResourceStatus{
-			Status: NewStatusFromStatusJobEvent(statusEvent),
+			Status:          NewStatusFromStatusJobEvent(statusEvent),
+			FailureMessages: failures,
 		}
 		logrus.Infof("adding status for the first time")
 		needsUpdate = true
 	} else {
 		// Need to conver the map[string]interface into a resource status.
 		if update, status := UpdateResourceStatus(statusMap, statusEvent); update {
+			status.FailureMessages = failures
 			u.Object["status"] = status
 			needsUpdate = true
 		}

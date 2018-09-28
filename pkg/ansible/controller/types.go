@@ -95,9 +95,9 @@ func NewStatusFromMap(sm map[string]interface{}) Status {
 }
 
 type ResourceStatus struct {
-	Status         `json:",inline"`
-	FailureMessage string   `json:"reason,omitempty"`
-	History        []Status `json:"history,omitempty"`
+	Status          `json:",inline"`
+	FailureMessages []string `json:"failures,omitempty"`
+	History         []Status `json:"history,omitempty"`
 }
 
 func UpdateResourceStatus(sm map[string]interface{}, je eventapi.StatusJobEvent) (bool, ResourceStatus) {
