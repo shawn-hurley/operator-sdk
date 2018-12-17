@@ -15,36 +15,41 @@
 package ansible
 
 import (
-	"github.com/operator-framework/operator-sdk/pkg/scaffold"
+	"path/filepath"
+
 	"github.com/operator-framework/operator-sdk/pkg/scaffold/input"
 )
 
-const WatchesFile = "watches.yaml"
+const MoleculeTestLocalInstallFile = "INSTALL.rst"
 
-type Watches struct {
+type MoleculeTestLocalInstall struct {
 	input.Input
-	GeneratePlaybook bool
-	RolesDir         string
-	Resource         scaffold.Resource
 }
 
 // GetInput - gets the input
-func (w *Watches) GetInput() (input.Input, error) {
-	if w.Path == "" {
-		w.Path = WatchesFile
+func (m *MoleculeTestLocalInstall) GetInput() (input.Input, error) {
+	if m.Path == "" {
+		m.Path = filepath.Join(MoleculeTestLocalDir, MoleculeTestLocalInstallFile)
 	}
-	w.TemplateBody = watchesAnsibleTmpl
-	w.RolesDir = RolesDir
-	return w.Input, nil
+	m.TemplateBody = moleculeTestLocalInstallAnsibleTmpl
+
+	return m.Input, nil
 }
 
-const watchesAnsibleTmpl = `---
-- version: {{.Resource.Version}}
-  group: {{.Resource.FullGroup}}
-  kind: {{.Resource.Kind}}
-  {{- if .GeneratePlaybook }}
-  playbook: /opt/ansible/playbook.yml
-  {{- else }}
-  role: /opt/ansible/{{.RolesDir}}/{{.Resource.LowerKind}}
-  {{- end }}
+const moleculeTestLocalInstallAnsibleTmpl = `*******
+Docker driver installation guide
+*******
+
+Requirements
+============
+
+* General molecule dependencies (see https://molecule.readthedocs.io/en/latest/installation.html)
+* Docker Engine
+* docker-py
+* docker
+
+Install
+=======
+
+    $ sudo pip install docker-py
 `
