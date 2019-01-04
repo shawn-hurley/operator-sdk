@@ -23,6 +23,7 @@ import (
 	k8sInternal "github.com/operator-framework/operator-sdk/internal/util/k8sutil"
 	"github.com/operator-framework/operator-sdk/internal/util/projutil"
 	"github.com/operator-framework/operator-sdk/pkg/scaffold"
+	"github.com/operator-framework/operator-sdk/pkg/scaffold/ansible"
 	"github.com/operator-framework/operator-sdk/pkg/test"
 
 	log "github.com/sirupsen/logrus"
@@ -82,8 +83,7 @@ func testClusterFunc(cmd *cobra.Command, args []string) error {
 	case projutil.OperatorTypeGo:
 		testCmd = []string{"/" + scaffold.GoTestScriptFile}
 	case projutil.OperatorTypeAnsible:
-		// TODO Make variable for this in scaffolding
-		testCmd = []string{"/ansible-test.sh"}
+		testCmd = []string{"/" + ansible.BuildTestFrameworkAnsibleTestScriptFile}
 	case projutil.OperatorTypeHelm:
 		log.Fatal("`test cluster` is not implemented for Helm operators")
 	default:
