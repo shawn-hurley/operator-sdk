@@ -226,10 +226,6 @@ func doAnsibleScaffold() {
 
 		&ansible.MoleculeDefaultPrepare{},
 
-		&ansible.MoleculeTestClusterInstall{},
-
-		&ansible.MoleculeDefaultInstall{},
-
 		&ansible.MoleculeDefaultPlaybook{
 			GeneratePlaybook: generatePlaybook,
 			Resource:         *resource,
@@ -263,8 +259,6 @@ func doAnsibleScaffold() {
 		&ansible.MoleculeTestLocalPrepare{
 			Resource: *resource,
 		},
-
-		&ansible.MoleculeTestLocalInstall{},
 	)
 	if err != nil {
 		log.Fatalf("new ansible scaffold failed: (%v)", err)
