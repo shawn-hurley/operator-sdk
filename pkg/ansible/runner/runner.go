@@ -148,7 +148,7 @@ func NewForPlaybook(path string, gvk schema.GroupVersionKind, finalizer *Finaliz
 		Path: path,
 		GVK:  gvk,
 		cmdFunc: func(ident, inputDirPath string) *exec.Cmd {
-			return exec.Command("ansible-runner", "-vv", "-p", path, "-i", ident, "run", inputDirPath)
+			return exec.Command("ansible-runner", "-vv", "--rotate-artifacts", "20", "-p", path, "-i", ident, "run", inputDirPath)
 		},
 		reconcilePeriod: reconcilePeriod,
 		manageStatus:    manageStatus,
@@ -174,7 +174,7 @@ func NewForRole(path string, gvk schema.GroupVersionKind, finalizer *Finalizer, 
 		GVK:  gvk,
 		cmdFunc: func(ident, inputDirPath string) *exec.Cmd {
 			rolePath, roleName := filepath.Split(path)
-			return exec.Command("ansible-runner", "-vv", "--role", roleName, "--roles-path", rolePath, "--hosts", "localhost", "-i", ident, "run", inputDirPath)
+			return exec.Command("ansible-runner", "-vv", "--rotate-artifacts", "20", "--role", roleName, "--roles-path", rolePath, "--hosts", "localhost", "-i", ident, "run", inputDirPath)
 		},
 		reconcilePeriod: reconcilePeriod,
 		manageStatus:    manageStatus,
@@ -320,7 +320,7 @@ func (r *runner) addFinalizer(finalizer *Finalizer) error {
 			return fmt.Errorf("finalizer playbook path must be absolute for %v", r.GVK)
 		}
 		r.finalizerCmdFunc = func(ident, inputDirPath string) *exec.Cmd {
-			return exec.Command("ansible-runner", "-vv", "-p", finalizer.Playbook, "-i", ident, "run", inputDirPath)
+			return exec.Command("ansible-runner", "-vv", "--rotate-artifacts", "20", "-p", finalizer.Playbook, "-i", ident, "run", inputDirPath)
 		}
 	case finalizer.Role != "":
 		if !filepath.IsAbs(finalizer.Role) {
@@ -329,7 +329,7 @@ func (r *runner) addFinalizer(finalizer *Finalizer) error {
 		r.finalizerCmdFunc = func(ident, inputDirPath string) *exec.Cmd {
 			path := strings.TrimRight(finalizer.Role, "/")
 			rolePath, roleName := filepath.Split(path)
-			return exec.Command("ansible-runner", "-vv", "--role", roleName, "--roles-path", rolePath, "--hosts", "localhost", "-i", ident, "run", inputDirPath)
+			return exec.Command("ansible-runner", "-vv", "--rotate-artifacts", "20", "--role", roleName, "--roles-path", rolePath, "--hosts", "localhost", "-i", ident, "run", inputDirPath)
 		}
 	case len(finalizer.Vars) != 0:
 		r.finalizerCmdFunc = r.cmdFunc
