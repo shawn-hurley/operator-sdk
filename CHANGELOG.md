@@ -4,6 +4,8 @@
 
 - A new command [`operator-sdk migrate`](https://github.com/operator-framework/operator-sdk/blob/master/doc/sdk-cli-reference.md#migrate) which adds a main.go source file and any associated source files for an operator that is not of the "go" type. ([#887](https://github.com/operator-framework/operator-sdk/pull/887))
 - A new command [`operator-sdk run ansible`](https://github.com/operator-framework/operator-sdk/blob/master/doc/sdk-cli-reference.md#ansible) which runs as an ansible operator process. This is intended to be used when running in a Pod inside a cluster. Developers wanting to run their operator locally should continue to use `up local`. ([#887](https://github.com/operator-framework/operator-sdk/pull/887))
+- A cache handler for the ansible operator proxy which allows for the ansible get requests to use the operators cache. ([#760](https://github.com/operator-framework/operator-sdk/pull/760))
+- A dependent resources watching handler which allows ansible operators to dynamically add watches for the resources that are created. ([#857](https://github.com/operator-framework/operator-sdk/pull/857))
 
 ### Changed
 
