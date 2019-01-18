@@ -1241,7 +1241,7 @@
   version = "v2.12.0"
 
 [[projects]]
-  digest = "1:6e9abe90f38178a5f1779a03ef5fa222fabf3fab637a588be7246259784bd45b"
+  digest = "1:91a7c8838cd57527d2fa9e608e0b33226a57679ebbe1a11d568d689657337c4b"
   name = "k8s.io/kube-openapi"
   packages = [
     "pkg/common",
@@ -1249,7 +1249,7 @@
     "pkg/util/proto/validation",
   ]
   pruneopts = "UT"
-  revision = "c59034cc13d587f5ef4e85ca0ade0c1866ae8e1d"
+  revision = "0cf8f7e6ed1d2e3d47d02e3b6e559369af24d803"
 
 [[projects]]
   digest = "1:f57c3174af68bf510f6970b11a38d75baa061c9cadba55e9794b870d2d3354d1"
